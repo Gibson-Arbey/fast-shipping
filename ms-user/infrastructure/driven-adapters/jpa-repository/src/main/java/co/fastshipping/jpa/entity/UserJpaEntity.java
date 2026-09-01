@@ -32,8 +32,9 @@ public class UserJpaEntity {
     @Column(name = "user_password", nullable = false)
     private String password;
 
-    @Column(name = "role_id")
-    private Long roleId;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private RoleJpaEntity role;
 
     @Column(name = "user_status")
     private UserStatus status;
