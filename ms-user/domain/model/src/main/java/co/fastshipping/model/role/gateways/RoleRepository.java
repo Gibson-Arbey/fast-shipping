@@ -5,4 +5,6 @@ import co.fastshipping.model.role.Role;
 public interface RoleRepository {
 
     Role findByName(String name);
+
+    Role findById(Long id);
 }

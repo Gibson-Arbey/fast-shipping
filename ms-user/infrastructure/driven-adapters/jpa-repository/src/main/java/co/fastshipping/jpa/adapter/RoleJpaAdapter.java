@@ -18,4 +18,9 @@ public class RoleJpaAdapter implements RoleRepository {
         return RoleJpaMapper.toDomain(roleJpaRepository.findByName(name));
 
     }
+
+    @Override
+    public Role findById(Long id) {
+        return RoleJpaMapper.toDomain(roleJpaRepository.findById(id).orElse(null));
+    }
 }
