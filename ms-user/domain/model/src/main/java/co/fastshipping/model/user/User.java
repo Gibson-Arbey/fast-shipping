@@ -37,7 +37,7 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public static User create(String name, String lastName, Password password, Email email, Long roleId) {
+    public static User create(String name, String lastName, Email email, Password password,  Long roleId) {
         return new User(
                 null,
                 name,

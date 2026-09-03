@@ -4,6 +4,7 @@ import co.fastshipping.api.config.ApiPath;
 import co.fastshipping.api.user.mapper.UserRequestMapper;
 import co.fastshipping.api.user.mapper.UserResponseMapper;
 import co.fastshipping.api.user.request.CreateUserRequest;
+import co.fastshipping.api.user.request.RegisterUserRequest;
 import co.fastshipping.api.user.response.UserResponse;
 import co.fastshipping.usecase.user.CreateUserUseCase;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,11 @@ public class UserApiRest {
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserResponseMapper.toResponse(createUserUseCase.execute(UserRequestMapper.toCreateUserCommand(request))));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> registerUser(@RequestBody RegisterUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(UserResponseMapper.toResponse(createUserUseCase.execute(UserRequestMapper.toCreateUserCommand(request))));
     }
 }

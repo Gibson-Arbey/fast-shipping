@@ -56,7 +56,7 @@ public class HandlerAdvice {
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Unexpected internal server error"
+                ex.getMessage() != null ? ex.getMessage() : "Unexpected internal server error"
         );
 
         problemDetail.setTitle("INTERNAL_SERVER_ERROR");

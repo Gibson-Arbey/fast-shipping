@@ -13,9 +13,9 @@ public class AuthenticationAdapter implements AuthenticationRepository {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public void authenticate(String username, String password) {
+    public void authenticate(String email, String password) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
+                new UsernamePasswordAuthenticationToken(email, password)
         );
     }
 }

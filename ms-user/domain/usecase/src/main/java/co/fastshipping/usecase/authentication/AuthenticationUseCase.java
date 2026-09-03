@@ -19,7 +19,7 @@ public class AuthenticationUseCase {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public Authentication login(String email, String password) {
+    public Authentication execute(String email, String password) {
 
         // 1. Validar las credenciales
         authenticationRepository.authenticate(email, password);
