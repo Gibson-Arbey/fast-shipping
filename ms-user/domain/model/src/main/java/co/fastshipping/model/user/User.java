@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class User {
 
-    private Long id;
+    private final Long id;
 
     private final String name;
 
