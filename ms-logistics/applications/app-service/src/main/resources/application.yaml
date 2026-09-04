@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: ms-logistics
+  threads:
+    virtual:
+      enabled: true
   devtools:
     add-properties: false
   h2:
@@ -12,3 +15,10 @@ spring:
       path: /h2
   profiles:
     include:
+# Eureka Config
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka/

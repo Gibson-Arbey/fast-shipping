@@ -54,3 +54,10 @@ security:
   jwtKeyPrivate: "9c9c48d57077710e8a8ec4a72f0c959fa11ea2c2e1073b7c7d39b4eefff5ddf8"
   jwtUserGenerator: "AUTH0JWT-BACKEND"
   jwtExpiration: 14400000
+# Eureka Config
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka/
