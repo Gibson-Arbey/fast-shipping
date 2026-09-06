@@ -11,6 +11,18 @@ services:
     volumes:
       - user_data:/var/lib/postgresql/data
 
+  shipping-db:
+    image: postgres:16-alpine
+    container_name: shipping-db
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: shipping-db
+    volumes:
+      - shipping_data:/var/lib/postgresql/data
+
   grafana-lgtm:
     image: 'grafana/otel-lgtm:latest'
     ports:
@@ -21,3 +33,4 @@ services:
       - OTEL_METRIC_EXPORT_INTERVAL=5000
 volumes:
   user_data:            # Declaramos el volumen persistente
+    shipping_data:      # Declaramos el volumen persistente

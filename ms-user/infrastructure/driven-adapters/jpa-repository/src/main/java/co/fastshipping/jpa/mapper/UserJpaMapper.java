@@ -8,7 +8,7 @@ import co.fastshipping.model.user.valueobject.Password;
 
 public class UserJpaMapper {
 
-    public static UserJpaEntity toEntity(User user) {
+    public static UserJpaEntity toJpaEntity(User user) {
         if(user == null) {
             return null;
         }

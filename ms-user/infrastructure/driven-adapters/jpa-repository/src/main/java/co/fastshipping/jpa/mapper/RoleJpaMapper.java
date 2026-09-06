@@ -12,7 +12,7 @@ public class RoleJpaMapper {
         return Role.restore(entity.getId(), entity.getName());
     }
 
-    public  static RoleJpaEntity toEntity(Role role) {
+    public  static RoleJpaEntity toJpaEntity(Role role) {
         if(role == null) {
             return null;
         }
