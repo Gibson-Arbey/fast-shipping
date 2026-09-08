@@ -5,6 +5,7 @@ import co.fastshipping.api.parcel.mapper.ParcelRequestMapper;
 import co.fastshipping.api.parcel.mapper.ParcelResponseMapper;
 import co.fastshipping.api.parcel.request.CreateParcelRequest;
 import co.fastshipping.api.parcel.response.ParcelResponse;
+import co.fastshipping.api.util.RequestUtil;
 import co.fastshipping.usecase.parcel.CreateParcelUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class ParcelApiRest {
             .status(HttpStatus.CREATED)
             .body(ParcelResponseMapper
                     .toResponse(createParcelUseCase.
-                            execute(ParcelRequestMapper
+                            execute(RequestUtil.getUserId(), ParcelRequestMapper
                                     .toCreateParcelCommand(request)))
         );
     }

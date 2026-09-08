@@ -1,5 +1,6 @@
 package co.fastshipping.api_gateway.config;
 
+import co.fastshipping.api_gateway.filter.UserContextGatewayFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.function.RouterFunction;
@@ -18,19 +19,23 @@ public class GatewayConfig {
 
         return route("ms-logistics")
                 .route(path("/api/logistics/**"), http())
+                .filter(UserContextGatewayFilter.filter())
                 .filter(lb("MS-LOGISTICS"))
                 .build()
 
                 .and(
                         route("ms-notification")
                                 .route(path("/api/notification/**"), http())
+                                .filter(UserContextGatewayFilter.filter())
                                 .filter(lb("MS-NOTIFICATION"))
                                 .build()
                 )
 
                 .and(
                         route("ms-shipping")
+                                .route(path("/api/parcel/**"), http())
                                 .route(path("/api/shipping/**"), http())
+                                .filter(UserContextGatewayFilter.filter())
                                 .filter(lb("MS-SHIPPING"))
                                 .build()
                 )
@@ -39,6 +44,7 @@ public class GatewayConfig {
                         route("ms-user")
                                 .route(path("/api/user/**"), http())
                                 .route(path("/api/auth/**"), http())
+                                .filter(UserContextGatewayFilter.filter())
                                 .filter(lb("MS-USER"))
                                 .build()
                 );

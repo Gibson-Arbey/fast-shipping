@@ -9,6 +9,8 @@ public class ParcelJpaMapper {
         if (entity == null) return  null;
         return Parcel.restore(
                 entity.getId(),
+                entity.getTrackingNumber(),
+                entity.getUserId(),
                 entity.getWeight(),
                 entity.getHeight(),
                 entity.getWidth(),
@@ -23,6 +25,8 @@ public class ParcelJpaMapper {
         if (domain == null) return null;
         return ParcelJpaEntity.builder()
                 .id(domain.getId())
+                .trackingNumber(domain.getTrackingNumber())
+                .userId(domain.getUserId())
                 .weight(domain.getWeight())
                 .height(domain.getHeight())
                 .width(domain.getWidth())

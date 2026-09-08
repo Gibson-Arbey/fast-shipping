@@ -1,5 +1,6 @@
 package co.fastshipping.api_gateway.filter;
 
+import co.fastshipping.api_gateway.model.UserAuthentication;
 import co.fastshipping.api_gateway.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,16 +46,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             var jwt = jwtUtil.validateToken(token);
 
+            Long userId = jwtUtil.extractUserId(jwt);
             String username = jwtUtil.extractUsername(jwt);
             String role = jwtUtil.extractRole(jwt);
 
             var authorities = List.of(
-                    new SimpleGrantedAuthority("ROLE_" + role)
+                    new SimpleGrantedAuthority(role)
             );
+
+            UserAuthentication userAuthentication =
+                    new UserAuthentication(
+                            userId,
+                            username,
+                            role
+                    );
 
             var authentication =
                     new UsernamePasswordAuthenticationToken(
-                            username,
+                            userAuthentication,
                             null,
                             authorities
                     );

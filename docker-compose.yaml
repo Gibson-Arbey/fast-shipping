@@ -33,4 +33,4 @@ services:
       - OTEL_METRIC_EXPORT_INTERVAL=5000
 volumes:
   user_data:            # Declaramos el volumen persistente
-    shipping_data:      # Declaramos el volumen persistente
+  shipping_data:      # Declaramos el volumen persistente

@@ -28,6 +28,7 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/user/register"
                         ).permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
 
