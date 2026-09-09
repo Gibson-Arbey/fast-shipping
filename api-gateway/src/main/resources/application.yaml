@@ -1,12 +1,25 @@
 spring:
   application:
     name: api-gateway
+  cloud:
+    loadbalancer:
+      eager-load:
+        clients:
+          - MS-SHIPPING
+          - MS-USER
+
 server:
   port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+cors:
+  allowed-origins: "http://localhost:4200,http://localhost:8080"
 # Security Config
 security:
   jwtKeyPrivate: "9c9c48d57077710e8a8ec4a72f0c959fa11ea2c2e1073b7c7d39b4eefff5ddf8"
   jwtUserGenerator: "AUTH0JWT-BACKEND"
-logging:
-  level:
-    org.springframework.security: TRACE

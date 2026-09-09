@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -45,6 +46,20 @@ public class HandlerAdvice {
         problemDetail.setProperty("code", code);
         problemDetail.setProperty("path", request.getRequestURI());
 
+        return problemDetail;
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ProblemDetail handleAuthenticationException(
+            AuthenticationException ex,
+            HttpServletRequest request
+    ) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid credentials"
+        );
+        problemDetail.setTitle("UNAUTHORIZED");
+        problemDetail.setProperty("path", request.getRequestURI());
         return problemDetail;
     }
 

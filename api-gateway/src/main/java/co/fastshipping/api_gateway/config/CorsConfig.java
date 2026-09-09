@@ -1,4 +1,4 @@
-package co.fastshipping.api.config;
+package co.fastshipping.api_gateway.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,20 +15,20 @@ public class CorsConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(
-            @Value("${cors.allowed-origins}") List<String> origins
+            @Value("${cors.allowed-origins}") List<String> allowedOrigins
     ) {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(origins);
-        config.setAllowCredentials(false);
-        config.setAllowedMethods(List.of("POST", "GET", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of(
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(allowedOrigins);
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
                 "X-Api-Version"
         ));
+        configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

@@ -2,19 +2,14 @@ package co.fastshipping.api.config;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(classes = CorsConfig.class)
 class CorsConfigTest {
 
     private CorsConfig corsConfig;
@@ -27,29 +22,14 @@ class CorsConfigTest {
     @Test
     void testCorsFilter() {
         List<String> origins = List.of("http://example.com", "http://another.com");
-        FilterRegistrationBean<CorsFilter> filterRegistrationBean = corsConfig.corsFilter(origins);
+        CorsConfigurationSource source = corsConfig.corsConfigurationSource(origins);
+        CorsConfiguration retrievedConfig = ((org.springframework.web.cors.UrlBasedCorsConfigurationSource) source)
+                .getCorsConfigurations().get("/**");
 
-        CorsFilter corsFilter = filterRegistrationBean.getFilter();
-
-        // Create a new UrlBasedCorsConfigurationSource to access the configuration
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOrigins(origins);
-        config.setAllowedMethods(List.of("POST", "GET")); // TODO: Check others required methods
-        config.setAllowedHeaders(List.of(CorsConfiguration.ALL));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-
-        CorsConfiguration retrievedConfig = source.getCorsConfigurations().get("/**");
-
-        assertNotNull(filterRegistrationBean);
-        assertEquals(Ordered.HIGHEST_PRECEDENCE, filterRegistrationBean.getOrder());
-        assertNotNull(corsFilter);
         assertNotNull(retrievedConfig);
-        assertEquals(Boolean.TRUE, retrievedConfig.getAllowCredentials());
+        assertEquals(Boolean.FALSE, retrievedConfig.getAllowCredentials());
         assertEquals(List.of("http://example.com", "http://another.com"), retrievedConfig.getAllowedOrigins());
-        assertEquals(List.of("POST", "GET"), retrievedConfig.getAllowedMethods());
-        assertEquals(List.of(CorsConfiguration.ALL), retrievedConfig.getAllowedHeaders());
+        assertEquals(List.of("POST", "GET", "PUT", "PATCH", "DELETE", "OPTIONS"), retrievedConfig.getAllowedMethods());
+        assertEquals(List.of("Authorization", "Content-Type", "X-Api-Version"), retrievedConfig.getAllowedHeaders());
     }
 }

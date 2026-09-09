@@ -8,6 +8,7 @@ import co.fastshipping.api.user.request.RegisterUserRequest;
 import co.fastshipping.api.user.response.UserResponse;
 import co.fastshipping.usecase.user.CreateUserUseCase;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,12 +24,12 @@ public class UserApiRest {
     private final CreateUserUseCase createUserUseCase;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(UserResponseMapper.toResponse(createUserUseCase.execute(UserRequestMapper.toCreateUserCommand(request))));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> registerUser(@RequestBody RegisterUserRequest request) {
+    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody RegisterUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(UserResponseMapper.toResponse(createUserUseCase.execute(UserRequestMapper.toCreateUserCommand(request))));
     }
 }

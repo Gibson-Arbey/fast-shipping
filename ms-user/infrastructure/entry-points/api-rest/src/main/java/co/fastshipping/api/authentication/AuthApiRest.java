@@ -6,6 +6,7 @@ import co.fastshipping.api.authentication.response.AuthenticationResponse;
 import co.fastshipping.api.config.ApiPath;
 import co.fastshipping.usecase.authentication.AuthenticationUseCase;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,7 @@ public class AuthApiRest {
 
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(AuthenticationResponseMapper.toResponse(authenticationUseCase.execute(request.email(), request.password())));
     }
 }

@@ -1,7 +1,6 @@
-package co.fastshipping.api_gateway.filter;
+package co.fastshipping.api.filter;
 
-import co.fastshipping.api_gateway.model.UserAuthentication;
-import co.fastshipping.api_gateway.util.JwtUtil;
+import co.fastshipping.api.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,8 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String authorization =
-                request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
 
         if (authorization == null) {
 
@@ -49,11 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             var claims = jwtUtil.extractClaims(jwtUtil.validateToken(token));
 
-            var authorities = List.of(
-                    new SimpleGrantedAuthority(claims.role())
-            );
-
-            UserAuthentication userAuthentication =
+            UserAuthentication user =
                     new UserAuthentication(
                             claims.userId(),
                             claims.email(),
@@ -62,9 +56,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             var authentication =
                     new UsernamePasswordAuthenticationToken(
-                            userAuthentication,
+                            user,
                             null,
-                            authorities
+                            List.of(new SimpleGrantedAuthority(claims.role()))
                     );
 
             SecurityContextHolder

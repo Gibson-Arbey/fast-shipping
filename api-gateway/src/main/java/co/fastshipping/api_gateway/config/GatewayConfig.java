@@ -30,7 +30,6 @@ public class GatewayConfig {
                                 .filter(lb("MS-NOTIFICATION"))
                                 .build()
                 )
-
                 .and(
                         route("ms-shipping")
                                 .route(path("/api/parcel/**"), http())
@@ -39,10 +38,16 @@ public class GatewayConfig {
                                 .filter(lb("MS-SHIPPING"))
                                 .build()
                 )
-
                 .and(
                         route("ms-user")
                                 .route(path("/api/user/**"), http())
+                                .filter(UserContextGatewayFilter.filter())
+                                .filter(lb("MS-USER"))
+                                .build()
+                )
+
+                .and(
+                        route("ms-auth")
                                 .route(path("/api/auth/**"), http())
                                 .filter(UserContextGatewayFilter.filter())
                                 .filter(lb("MS-USER"))

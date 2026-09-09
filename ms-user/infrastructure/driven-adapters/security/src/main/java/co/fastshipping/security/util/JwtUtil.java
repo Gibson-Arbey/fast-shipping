@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Locale;
 
 @Component
 public class JwtUtil {
@@ -22,10 +23,39 @@ public class JwtUtil {
                 .withIssuer(securityConstant.getJwtUserGenerator())
                 .withSubject(email)
                 .withClaim("userId", userId)
-                .withClaim("role", "ROLE_" + role)
+                .withClaim("role", normalizeRole(role))
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + securityConstant.getJwtExpiration()))
                 .sign(algorithm);
+    }
+
+    public com.auth0.jwt.interfaces.DecodedJWT validateToken(String token) {
+        return JWT.require(algorithm)
+                .withIssuer(securityConstant.getJwtUserGenerator())
+                .build()
+                .verify(token);
+    }
+
+    public JwtClaims extractClaims(com.auth0.jwt.interfaces.DecodedJWT jwt) {
+        Long userId = jwt.getClaim("userId").asLong();
+        String email = jwt.getSubject();
+        String role = jwt.getClaim("role").asString();
+
+        if (userId == null || userId <= 0 || email == null || email.isBlank() || role == null || role.isBlank()) {
+            throw new IllegalArgumentException("JWT is missing required identity claims");
+        }
+
+        return new JwtClaims(userId, email, normalizeRole(role));
+    }
+
+    private String normalizeRole(String role) {
+        String normalizedRole = role.trim().toUpperCase(Locale.ROOT);
+        return normalizedRole.startsWith("ROLE_")
+                ? normalizedRole
+                : "ROLE_" + normalizedRole;
+    }
+
+    public record JwtClaims(Long userId, String email, String role) {
     }
 
 }

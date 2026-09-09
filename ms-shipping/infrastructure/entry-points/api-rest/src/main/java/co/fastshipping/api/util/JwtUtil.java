@@ -1,4 +1,4 @@
-package co.fastshipping.api_gateway.util;
+package co.fastshipping.api.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -25,22 +25,10 @@ public class JwtUtil {
                 .verify(token);
     }
 
-    public Long extractUserId(DecodedJWT jwt) {
-        return jwt.getClaim("userId").asLong();
-    }
-
-    public String extractRole(DecodedJWT jwt) {
-        return jwt.getClaim("role").asString();
-    }
-
-    public String extractUsername(DecodedJWT jwt) {
-        return jwt.getSubject();
-    }
-
     public JwtClaims extractClaims(DecodedJWT jwt) {
-        Long userId = extractUserId(jwt);
-        String email = extractUsername(jwt);
-        String role = extractRole(jwt);
+        Long userId = jwt.getClaim("userId").asLong();
+        String email = jwt.getSubject();
+        String role = jwt.getClaim("role").asString();
 
         if (userId == null || userId <= 0 || email == null || email.isBlank() || role == null || role.isBlank()) {
             throw new IllegalArgumentException("JWT is missing required identity claims");
@@ -58,4 +46,5 @@ public class JwtUtil {
 
     public record JwtClaims(Long userId, String email, String role) {
     }
+
 }
