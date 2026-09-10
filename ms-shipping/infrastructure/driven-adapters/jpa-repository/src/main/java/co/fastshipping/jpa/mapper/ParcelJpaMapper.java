@@ -1,6 +1,7 @@
 package co.fastshipping.jpa.mapper;
 
 import co.fastshipping.jpa.entity.ParcelJpaEntity;
+import co.fastshipping.jpa.entity.ShipmentJpaEntity;
 import co.fastshipping.model.parcel.Parcel;
 
 public class ParcelJpaMapper {
@@ -10,14 +11,15 @@ public class ParcelJpaMapper {
         return Parcel.restore(
                 entity.getId(),
                 entity.getTrackingNumber(),
-                entity.getUserId(),
+                entity.getAddressId(),
                 entity.getWeight(),
                 entity.getHeight(),
                 entity.getWidth(),
                 entity.getLength(),
                 entity.getClasificationTamanho(),
                 entity.getType(),
-                entity.getDescription()
+                entity.getDescription(),
+                entity.getShipment() != null ? entity.getShipment().getId() : null
         );
     }
 
@@ -26,7 +28,7 @@ public class ParcelJpaMapper {
         return ParcelJpaEntity.builder()
                 .id(domain.getId())
                 .trackingNumber(domain.getTrackingNumber())
-                .userId(domain.getUserId())
+                .addressId(domain.getAddressId())
                 .weight(domain.getWeight())
                 .height(domain.getHeight())
                 .width(domain.getWidth())
@@ -34,6 +36,7 @@ public class ParcelJpaMapper {
                 .clasificationTamanho(domain.getClasificationTamanho())
                 .type(domain.getType())
                 .description(domain.getDescription())
+                .shipment(domain.getShipmentId() != null ? ShipmentJpaEntity.builder().id(domain.getShipmentId()).build() : null)
                 .build();
     }
 

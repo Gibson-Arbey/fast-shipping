@@ -11,7 +11,7 @@ public class Parcel {
 
     private final Long id;
     private final UUID trackingNumber;
-    private final Long userId;
+    private final Long addressId;
     private final BigDecimal weight;
     private final BigDecimal height;
     private final BigDecimal width;
@@ -19,10 +19,10 @@ public class Parcel {
     private final ClasificationTamanho clasificationTamanho;
     private final ParcelType type;
     private final String description;
-
-    private Parcel(Long id, UUID trackingNumber, Long userId, BigDecimal weight, BigDecimal height, BigDecimal width, BigDecimal length, ClasificationTamanho clasificationTamanho, ParcelType type, String description) {
-        if(userId == null) {
-            throw new InvalidFieldException("UserId must not be null");
+    private final Long shipmentId;
+    private Parcel(Long id, UUID trackingNumber, Long addressId, BigDecimal weight, BigDecimal height, BigDecimal width, BigDecimal length, ClasificationTamanho clasificationTamanho, ParcelType type, String description, Long shipmentId) {
+        if(addressId == null) {
+            throw new InvalidFieldException("AddressId must not be null");
         }
         if(weight == null || weight.compareTo(BigDecimal.ZERO) <= 0){
             throw new InvalidFieldException("Weight must be greater than zero");
@@ -45,7 +45,7 @@ public class Parcel {
 
         this.id = id;
         this.trackingNumber = trackingNumber;
-        this.userId = userId;
+        this.addressId = addressId;
         this.weight = weight;
         this.height = height;
         this.width = width;
@@ -53,14 +53,15 @@ public class Parcel {
         this.clasificationTamanho = clasificationTamanho;
         this.type = type;
         this.description = description;
+        this.shipmentId = shipmentId;
     }
 
-    public static Parcel create(Long userId, BigDecimal weight, BigDecimal height, BigDecimal width, BigDecimal length, ClasificationTamanho clasificationTamanho, ParcelType type, String description) {
-        return new Parcel(null, null, userId, weight, height, width, length, clasificationTamanho, type, description);
+    public static Parcel create(Long addressId, BigDecimal weight, BigDecimal height, BigDecimal width, BigDecimal length, ClasificationTamanho clasificationTamanho, ParcelType type, String description) {
+        return new Parcel(null, UUID.randomUUID(), addressId, weight, height, width, length, clasificationTamanho, type, description, null);
     }
 
-    public static  Parcel restore(Long id, UUID trackingNumber, Long userId, BigDecimal weight, BigDecimal height, BigDecimal width, BigDecimal length, ClasificationTamanho clasificationTamanho, ParcelType type, String description) {
-        return new Parcel(id, trackingNumber, userId, weight, height, width, length, clasificationTamanho, type, description);
+    public static  Parcel restore(Long id, UUID trackingNumber, Long addressId, BigDecimal weight, BigDecimal height, BigDecimal width, BigDecimal length, ClasificationTamanho clasificationTamanho, ParcelType type, String description, Long shipmentId) {
+        return new Parcel(id, trackingNumber, addressId, weight, height, width, length, clasificationTamanho, type, description, shipmentId);
     }
 
 }

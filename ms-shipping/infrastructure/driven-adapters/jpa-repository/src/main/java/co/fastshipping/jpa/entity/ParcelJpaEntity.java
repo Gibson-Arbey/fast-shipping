@@ -25,8 +25,8 @@ public class ParcelJpaEntity {
     @Column(name = "parc_trackingnumber")
     private UUID trackingNumber;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "addr_id")
+    private Long addressId;
 
     @Column(name = "parc_weight")
     private BigDecimal weight;
@@ -50,4 +50,8 @@ public class ParcelJpaEntity {
 
     @Column(name = "parc_description")
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "ship_id", referencedColumnName = "ship_id")
+    private ShipmentJpaEntity shipment;
 }

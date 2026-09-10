@@ -41,13 +41,7 @@ public class GatewayConfig {
                 .and(
                         route("ms-user")
                                 .route(path("/api/user/**"), http())
-                                .filter(UserContextGatewayFilter.filter())
-                                .filter(lb("MS-USER"))
-                                .build()
-                )
-
-                .and(
-                        route("ms-auth")
+                                .route(path("/api/address/**"), http())
                                 .route(path("/api/auth/**"), http())
                                 .filter(UserContextGatewayFilter.filter())
                                 .filter(lb("MS-USER"))
