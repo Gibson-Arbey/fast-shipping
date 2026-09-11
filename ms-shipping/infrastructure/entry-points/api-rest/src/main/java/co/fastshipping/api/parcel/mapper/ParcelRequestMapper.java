@@ -7,6 +7,14 @@ public class ParcelRequestMapper {
 
     public static CreateParcelCommand toCreateParcelCommand(CreateParcelRequest request) {
         if(request == null) return null;
-        return new CreateParcelCommand(request.weight(), request.height(), request.width(), request.length(), request.type(), request.description());
+        return new CreateParcelCommand(
+                request.destinationAddressId(),
+                request.weight(),
+                request.height(),
+                request.width(),
+                request.length(),
+                request.type(),
+                request.description()
+        );
     }
 }

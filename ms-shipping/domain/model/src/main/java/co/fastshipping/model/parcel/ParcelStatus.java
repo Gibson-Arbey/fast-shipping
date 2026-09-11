@@ -1,6 +1,6 @@
-package co.fastshipping.model.shipment;
+package co.fastshipping.model.parcel;
 
-public enum ShipmentStatus {
+public enum ParcelStatus {
     CREATED,
     CONFIRMED,
     ASSIGNED,

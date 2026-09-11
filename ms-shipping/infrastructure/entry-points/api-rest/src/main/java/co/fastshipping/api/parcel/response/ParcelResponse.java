@@ -6,12 +6,15 @@ import java.util.UUID;
 public record ParcelResponse(
         Long id,
         UUID trackingNumber,
+        Long destinationAddressId,
         BigDecimal weight,
         BigDecimal height,
         BigDecimal width,
         BigDecimal length,
         String clasificationTamanho,
         String type,
-        String description
+        String status,
+        String description,
+        Long shipmentId
 ) {
 }

@@ -9,22 +9,21 @@ public class Shipment {
 
     private final Long id;
 
-    private final ShipmentStatus status;
-
-    private final String originAddress;
-
-    private final String destinationAddress;
+    private final Long senderAddressId;
 
     private final LocalDateTime createdAt;
 
-    private final LocalDateTime deliveredAt;
-
-    private Shipment(Long id, ShipmentStatus status, String originAddress, String destinationAddress, LocalDateTime createdAt, LocalDateTime deliveredAt) {
+    private Shipment(Long id, Long senderAddressId, LocalDateTime createdAt) {
         this.id = id;
-        this.status = status;
-        this.originAddress = originAddress;
-        this.destinationAddress = destinationAddress;
+        this.senderAddressId = senderAddressId;
         this.createdAt = createdAt;
-        this.deliveredAt = deliveredAt;
+    }
+
+    public static Shipment create(Long senderAddressId) {
+        return new Shipment(null, senderAddressId, LocalDateTime.now());
+    }
+
+    public static Shipment restore(Long id, Long senderAddressId, LocalDateTime createdAt) {
+        return new Shipment(id, senderAddressId, createdAt);
     }
 }

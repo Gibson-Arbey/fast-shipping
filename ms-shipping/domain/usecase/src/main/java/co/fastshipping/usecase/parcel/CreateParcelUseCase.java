@@ -12,10 +12,19 @@ public class CreateParcelUseCase {
 
     private final ParcelRepository parcelRepository;
 
-    public Parcel execute(Long userId, CreateParcelCommand command) {
+    public Parcel execute(CreateParcelCommand command) {
         ClasificationTamanho clasificationTamanho = ClasificationTamanho.fromDimensions(command.height(), command.width(), command.length());
 
-        Parcel parcel = Parcel.create(userId, command.weight(), command.height(), command.width(), command.length(), clasificationTamanho, ParcelType.valueOf(command.type()), command.description());
+        Parcel parcel = Parcel.create(
+                command.destinationAddressId(),
+                command.weight(),
+                command.height(),
+                command.width(),
+                command.length(),
+                clasificationTamanho,
+                ParcelType.valueOf(command.type()),
+                command.description()
+        );
         return parcelRepository.save(parcel);
 
     }

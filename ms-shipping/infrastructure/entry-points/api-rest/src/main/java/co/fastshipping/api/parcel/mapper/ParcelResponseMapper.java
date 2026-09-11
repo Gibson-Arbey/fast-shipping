@@ -10,13 +10,16 @@ public class ParcelResponseMapper {
         return new ParcelResponse(
             parcel.getId(),
             parcel.getTrackingNumber(),
+            parcel.getDestinationAddressId(),
             parcel.getWeight(),
             parcel.getHeight(),
             parcel.getWidth(),
             parcel.getLength(),
             parcel.getClasificationTamanho().name(),
             parcel.getType().name(),
-            parcel.getDescription()
+            parcel.getStatus().name(),
+            parcel.getDescription(),
+            parcel.getShipmentId()
         );
     }
 }
