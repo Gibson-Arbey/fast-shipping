@@ -35,7 +35,9 @@ CREATE TABLE shipmenthistories (
 -- ============================================
 
 ALTER TABLE parcels
-ADD COLUMN ship_id BIGINT,
+ADD COLUMN ship_id BIGINT;
+
+ALTER TABLE parcels
 RENAME COLUMN user_id TO addr_id;
 
 ALTER TABLE parcels

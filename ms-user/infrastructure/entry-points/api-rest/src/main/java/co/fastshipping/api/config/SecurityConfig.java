@@ -1,6 +1,6 @@
 package co.fastshipping.api.config;
 
-import co.fastshipping.security.adapter.JwtAuthenticationFilter;
+import co.fastshipping.api.filter.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

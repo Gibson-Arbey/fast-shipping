@@ -1,6 +1,6 @@
-package co.fastshipping.security.adapter;
+package co.fastshipping.api.filter;
 
-import co.fastshipping.security.util.JwtUtil;
+import co.fastshipping.model.authentication.gateways.AuthenticationTokenValidator;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final AuthenticationTokenValidator tokenValidator;
 
     @Override
     protected void doFilterInternal(
@@ -27,9 +27,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null) {
+
             filterChain.doFilter(request, response);
             return;
         }
@@ -42,15 +44,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authorization.substring(7).trim();
 
         try {
-            var claims = jwtUtil.extractClaims(jwtUtil.validateToken(token));
-            var principal = new UserAuthentication(claims.userId(), claims.email(), claims.role());
-            var authentication = new UsernamePasswordAuthenticationToken(
-                    principal,
-                    null,
-                    List.of(new SimpleGrantedAuthority(claims.role()))
-            );
+            var user = tokenValidator.validate(token);
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserAuthentication principal =
+                    new UserAuthentication(user.userId(), user.email(), user.role());
+
+            var authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            principal,
+                            null,
+                            List.of(new SimpleGrantedAuthority(user.role()))
+                    );
+
+            SecurityContextHolder
+                    .getContext()
+                    .setAuthentication(authentication);
+
         } catch (Exception ex) {
             SecurityContextHolder.clearContext();
             respondUnauthorized(response);

@@ -18,5 +18,5 @@ public interface AddressJpaRepository extends JpaRepository<AddressJpaEntity, Lo
     void softDeleteById(@Param("addressId") Long addressId);
 
     @Query("SELECT EXISTS ( SELECT 1 FROM AddressJpaEntity a WHERE a.id = :addressId AND a.customer.id = :customerId AND a.deleted = false )")
-    boolean existsAddress(@Param("addressId") Long addressId, @Param("customerId") Long customerId);
+    boolean existsAddressByIdAndCustomerId(@Param("addressId") Long addressId, @Param("customerId") Long customerId);
 }

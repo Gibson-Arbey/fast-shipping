@@ -36,7 +36,7 @@ public class AddressJpaAdapter implements AddressRepository {
 
     @Override
     public boolean existsByIdAndCustomerId(Long addressId, Long customerId) {
-        return false;
+        return addressJpaRepository.existsAddressByIdAndCustomerId(addressId, customerId);
     }
 
     @Override
