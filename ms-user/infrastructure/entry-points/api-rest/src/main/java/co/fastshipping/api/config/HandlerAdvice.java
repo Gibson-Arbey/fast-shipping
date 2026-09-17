@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -25,6 +26,59 @@ public class HandlerAdvice {
                 ex.getMessage(),
                 request
         );
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ProblemDetail handleAuthenticationException(
+            AuthenticationException ex,
+            HttpServletRequest request
+    ) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid credentials"
+        );
+        problemDetail.setTitle("UNAUTHORIZED");
+        problemDetail.setProperty("path", request.getRequestURI());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleValidationException(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request
+    ) {
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .orElse("Request validation failed");
+
+        return buildProblemDetail(
+                "INVALID_REQUEST",
+                ErrorTypeEnum.VALIDATION,
+                message,
+                request
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail handleGeneric(
+            Exception ex,
+            HttpServletRequest request
+    ) {
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getMessage() != null ? ex.getMessage() : "Unexpected internal server error"
+        );
+
+        problemDetail.setTitle("INTERNAL_SERVER_ERROR");
+        problemDetail.setProperty("path", request.getRequestURI());
+
+        log.error("Internal error", ex);
+
+        return problemDetail;
     }
 
     private ProblemDetail buildProblemDetail(
@@ -48,40 +102,6 @@ public class HandlerAdvice {
 
         return problemDetail;
     }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ProblemDetail handleAuthenticationException(
-            AuthenticationException ex,
-            HttpServletRequest request
-    ) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.UNAUTHORIZED,
-                "Invalid credentials"
-        );
-        problemDetail.setTitle("UNAUTHORIZED");
-        problemDetail.setProperty("path", request.getRequestURI());
-        return problemDetail;
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ProblemDetail handleGeneric(
-            Exception ex,
-            HttpServletRequest request
-    ) {
-
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getMessage() != null ? ex.getMessage() : "Unexpected internal server error"
-        );
-
-        problemDetail.setTitle("INTERNAL_SERVER_ERROR");
-        problemDetail.setProperty("path", request.getRequestURI());
-
-        log.error("Internal error", ex);
-
-        return problemDetail;
-    }
-
 
     private HttpStatus getHttpStatus(ErrorTypeEnum errorType) {
         return switch (errorType) {

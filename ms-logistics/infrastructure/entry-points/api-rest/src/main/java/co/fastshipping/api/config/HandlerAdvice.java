@@ -52,18 +52,14 @@ public class HandlerAdvice {
             Exception ex,
             HttpServletRequest request
     ) {
-
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getMessage() != null ? ex.getMessage() : "Unexpected internal server error"
-        );
-
-        problemDetail.setTitle("INTERNAL_SERVER_ERROR");
-        problemDetail.setProperty("path", request.getRequestURI());
-
         log.error("Internal error", ex);
 
-        return problemDetail;
+        return buildProblemDetail(
+                "INTERNAL_SERVER_ERROR",
+                ErrorTypeEnum.INTERNAL_SERVER_ERROR,
+                ex.getMessage() != null ? ex.getMessage() : "Unexpected internal server error",
+                request
+        );
     }
 
     private ProblemDetail buildProblemDetail(
@@ -72,19 +68,11 @@ public class HandlerAdvice {
             String message,
             HttpServletRequest request
     ) {
-
         HttpStatus status = getHttpStatus(errorType);
-
-        ProblemDetail problemDetail =
-                ProblemDetail.forStatusAndDetail(
-                        status,
-                        message
-                );
-
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, message);
         problemDetail.setTitle(errorType.name());
         problemDetail.setProperty("code", code);
         problemDetail.setProperty("path", request.getRequestURI());
-
         return problemDetail;
     }
 

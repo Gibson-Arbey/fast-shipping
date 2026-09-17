@@ -17,7 +17,6 @@ public class GetParcelHistoryUseCase {
                 query.parcelId(),
                 query.fromDate(),
                 query.toDate(),
-                query.applystatus(),
                 query.status());
     }
 }

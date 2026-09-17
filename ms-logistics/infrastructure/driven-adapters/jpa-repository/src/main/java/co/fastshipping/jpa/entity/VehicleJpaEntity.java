@@ -26,9 +26,10 @@ public class VehicleJpaEntity {
     private VehicleStatus status;
 
     @Column(name = "vehi_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private VehicleType type;
 
-    @Column(name = "vehi_maxweith", nullable = false)
+    @Column(name = "vehi_maxweight", nullable = false)
     private BigDecimal maxWeigth;
 
     @Column(name = "vehi_maxvolume", nullable = false)

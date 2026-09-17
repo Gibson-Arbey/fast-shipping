@@ -28,9 +28,9 @@ public class ParcelHistoryJpaAdapter implements ParcelHistoryRepository {
     }
 
     @Override
-    public List<ParcelHistory> findAllByFilters(Long parcelId, LocalDateTime fromDate, LocalDateTime toDate, Boolean applyStatus, ParcelStatus status) {
+    public List<ParcelHistory> findAllByFilters(Long parcelId, LocalDateTime fromDate, LocalDateTime toDate, ParcelStatus status) {
         return parcelHistoryJpaRepository
-                .findAllByParcelId(parcelId, fromDate, toDate, applyStatus, status)
+                .findAllByParcelId(parcelId, fromDate, toDate, status != null, status)
                 .stream()
                 .map(ParcelHistoryJpaMapper::toDomain)
                 .collect(Collectors.toList());

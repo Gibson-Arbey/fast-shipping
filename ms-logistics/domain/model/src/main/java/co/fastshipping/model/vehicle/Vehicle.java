@@ -24,8 +24,8 @@ public class Vehicle {
 
         if(status == null) throw new InvalidFieldException("status cannot be null");
         if(type == null) throw new InvalidFieldException("type cannot be null");
-        if(maxWeigth == null) throw new InvalidFieldException("maxWeigth cannot be null");
-        if(maxVolume == null) throw new InvalidFieldException("maxVolume cannot be null");
+        if(maxWeigth == null || maxWeigth.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidFieldException("maxWeigth not valid");
+        if(maxVolume == null || maxVolume.compareTo(BigDecimal.ZERO) <= 0) throw new InvalidFieldException("maxVolume not valid");
         if(plate == null) throw new InvalidFieldException("plate cannot be null");
 
         this.id = id;

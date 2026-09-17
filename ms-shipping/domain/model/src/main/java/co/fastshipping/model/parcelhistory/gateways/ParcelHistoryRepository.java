@@ -10,5 +10,5 @@ public interface ParcelHistoryRepository {
 
     ParcelHistory save(ParcelHistory parcelHistory);
 
-    List<ParcelHistory> findAllByFilters(Long parcelId, LocalDateTime fromDate, LocalDateTime toDate, Boolean applyStatus, ParcelStatus status);
+    List<ParcelHistory> findAllByFilters(Long parcelId, LocalDateTime fromDate, LocalDateTime toDate, ParcelStatus status);
 }

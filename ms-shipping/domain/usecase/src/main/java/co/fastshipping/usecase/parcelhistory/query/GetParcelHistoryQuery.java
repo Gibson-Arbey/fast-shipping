@@ -4,5 +4,5 @@ import co.fastshipping.model.parcel.ParcelStatus;
 
 import java.time.LocalDateTime;
 
-public record GetParcelHistoryQuery(Long parcelId, LocalDateTime fromDate, LocalDateTime toDate, Boolean applystatus, ParcelStatus status) {
+public record GetParcelHistoryQuery(Long parcelId, LocalDateTime fromDate, LocalDateTime toDate, ParcelStatus status) {
 }

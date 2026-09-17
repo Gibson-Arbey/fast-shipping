@@ -31,7 +31,6 @@ public class ParcelHistoryApiRest {
                 parcelId,
                 fromDate != null ? fromDate : LocalDateTime.of(1990, 1, 1, 0, 0),
                 toDate != null ? toDate : LocalDateTime.now(),
-                status != null,
                 status != null ? ParcelStatus.valueOf(status.toUpperCase()) : null
         );
         return ResponseEntity
