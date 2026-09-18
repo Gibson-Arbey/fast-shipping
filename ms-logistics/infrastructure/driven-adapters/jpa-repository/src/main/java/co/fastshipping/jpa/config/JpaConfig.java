@@ -26,7 +26,7 @@ public class JpaConfig {
     }
 
     @Bean
-    public DataSource datasource(DBSecret secret, @Value("${spring.datasource.driverClassName}") String driverClass) {
+    public DataSource datasource(DBSecret secret, @Value("${spring.datasource.driver-class-name}") String driverClass) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(secret.getUrl());
         config.setUsername(secret.getUsername());
@@ -38,7 +38,8 @@ public class JpaConfig {
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
             DataSource dataSource,
-            @Value("${spring.jpa.databasePlatform}") String dialect) {
+            @Value("${spring.jpa.properties.hibernate.dialect}") String dialect,
+            @Value("${spring.jpa.hibernate.ddl-auto:none}") String ddlAuto) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan("co.fastshipping.jpa");
@@ -48,9 +49,15 @@ public class JpaConfig {
 
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", dialect);
-        properties.setProperty("hibernate.hbm2ddl.auto", "update"); // TODO: remove this for non auto create schema
+        properties.setProperty("hibernate.hbm2ddl.auto", ddlAuto);
         em.setJpaProperties(properties);
 
         return em;
+    }
+
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            DataSource dataSource,
+            String dialect) {
+        return entityManagerFactory(dataSource, dialect, "none");
     }
 }

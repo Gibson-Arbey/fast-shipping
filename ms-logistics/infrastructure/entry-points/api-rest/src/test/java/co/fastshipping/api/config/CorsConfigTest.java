@@ -1,5 +1,6 @@
 package co.fastshipping.api.config;
 
+import org.springframework.web.cors.CorsConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
