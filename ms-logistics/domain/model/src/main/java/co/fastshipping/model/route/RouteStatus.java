@@ -1,24 +1,22 @@
-package co.fastshipping.model.user;
+package co.fastshipping.model.route;
 
 import co.fastshipping.model.exception.InvalidFieldException;
 
-public enum UserStatus {
+public enum RouteStatus {
     ACTIVE,
-    INACTIVE,
-    SUSPENDED;
+    INACTIVE;
 
-    public static UserStatus fromString(String value) {
+    public static RouteStatus fromString(String value) {
         if (value == null || value.isBlank()) {
             return null;
         }
 
-        for (UserStatus status : values()) {
+        for (RouteStatus status : values()) {
             if (status.name().equalsIgnoreCase(value)) {
                 return status;
             }
         }
 
-        throw new InvalidFieldException("Invalid user status: " + value);
+        throw new InvalidFieldException("Invalid route status: " + value);
     }
-
 }

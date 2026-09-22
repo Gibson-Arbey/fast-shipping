@@ -36,7 +36,8 @@ public class UserJpaEntity {
     @JoinColumn(name = "role_id")
     private RoleJpaEntity role;
 
-    @Column(name = "user_status")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_status", nullable = false)
     private UserStatus status;
 
     @Column(name = "user_createdat")
