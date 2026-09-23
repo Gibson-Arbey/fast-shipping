@@ -18,8 +18,8 @@ public interface VehicleJpaRepository extends JpaRepository<VehicleJpaEntity, Lo
         FROM VehicleJpaEntity v
         WHERE (:status IS NULL OR v.status = :status)
           AND (:type IS NULL OR v.type = :type)
-          AND (:minWeightCapacity IS NULL OR v.maxWeigth >= :minWeightCapacity)
-          AND (:maxWeightCapacity IS NULL OR v.maxWeigth <= :maxWeightCapacity)
+          AND (:minWeightCapacity IS NULL OR v.maxWeight >= :minWeightCapacity)
+          AND (:maxWeightCapacity IS NULL OR v.maxWeight <= :maxWeightCapacity)
           AND (:minVolumeCapacity IS NULL OR v.maxVolume >= :minVolumeCapacity)
           AND (:maxVolumeCapacity IS NULL OR v.maxVolume <= :maxVolumeCapacity)
           AND (

@@ -15,7 +15,7 @@ public class VehicleJpaMapper {
                 .id(vehicle.getId())
                 .status(vehicle.getStatus())
                 .type(vehicle.getType())
-                .maxWeigth(vehicle.getMaxWeigth())
+                .maxWeight(vehicle.getMaxWeight())
                 .maxVolume(vehicle.getMaxVolume())
                 .plate(vehicle.getPlate())
                 .build();
@@ -30,7 +30,7 @@ public class VehicleJpaMapper {
             entity.getId(),
             entity.getStatus(),
             entity.getType(),
-            entity.getMaxWeigth(),
+            entity.getMaxWeight(),
             entity.getMaxVolume(),
             entity.getPlate()
         );

@@ -4,12 +4,14 @@ import co.fastshipping.api.config.ApiPath;
 import co.fastshipping.api.route.mapper.RouteRequestMapper;
 import co.fastshipping.api.route.mapper.RouteResponseMapper;
 import co.fastshipping.api.route.request.RegisterRouteRequest;
+import co.fastshipping.api.route.request.UpdateRouteRequest;
 import co.fastshipping.api.route.request.UpdateRouteStatusRequest;
 import co.fastshipping.api.route.response.RouteResponse;
 import co.fastshipping.usecase.route.GetRouteByIdUseCase;
 import co.fastshipping.usecase.route.GetRouteUseCase;
 import co.fastshipping.usecase.route.RegisterRouteUseCase;
 import co.fastshipping.usecase.route.UpdateStatusRouteUseCase;
+import co.fastshipping.usecase.route.UpdateRouteUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +37,7 @@ public class RouteApiRest {
     private final GetRouteUseCase getRouteUseCase;
     private final GetRouteByIdUseCase getRouteByIdUseCase;
     private final UpdateStatusRouteUseCase updateStatusRouteUseCase;
+    private final UpdateRouteUseCase updateRouteUseCase;
 
     @PostMapping
     public ResponseEntity<RouteResponse> register(
@@ -62,6 +66,16 @@ public class RouteApiRest {
         return ResponseEntity.ok(
                 RouteResponseMapper.toResponse(getRouteByIdUseCase.execute(id))
         );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RouteResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateRouteRequest request
+    ) {
+        return ResponseEntity.ok(RouteResponseMapper.toResponse(
+                updateRouteUseCase.execute(id, RouteRequestMapper.toCommand(request))
+        ));
     }
 
     @PatchMapping("/{id}/status")

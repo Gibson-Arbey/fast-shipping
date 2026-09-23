@@ -24,7 +24,7 @@ public class Driver {
     private Driver(Long id, Long userId, String licenseNumber, Set<LicenseCategory> licenseCategories, DriverStatus status) {
         if (userId == null || userId <= 0) throw new InvalidFieldException("userId must be greater than zero");
         if (licenseNumber == null || licenseNumber.isBlank()) throw new InvalidFieldException("licenseNumber cannot be blank");
-        if (licenseCategories == null || licenseCategories.isEmpty() || licenseCategories.contains(null)) {
+        if (licenseCategories == null || licenseCategories.isEmpty() || licenseCategories.stream().anyMatch(java.util.Objects::isNull)) {
             throw new InvalidFieldException("licenseCategories cannot be empty");
         }
         if (status == null) throw new InvalidFieldException("status cannot be null");
@@ -53,5 +53,39 @@ public class Driver {
      */
     public static Driver create(Long id, Long userId, String licenseNumber, Set<LicenseCategory> licenseCategories, DriverStatus status) {
         return restore(id, userId, licenseNumber, licenseCategories, status);
+    }
+
+    public Driver assign() {
+        requireStatus(DriverStatus.AVAILABLE, "Driver can only be assigned when available");
+        return withStatus(DriverStatus.ASSIGNED);
+    }
+
+    public Driver startDriving() {
+        requireStatus(DriverStatus.ASSIGNED, "Driver can only start driving after being assigned");
+        return withStatus(DriverStatus.DRIVING);
+    }
+
+    public Driver release() {
+        if (status != DriverStatus.ASSIGNED && status != DriverStatus.DRIVING) {
+            throw new InvalidFieldException("Driver can only be released when assigned or driving");
+        }
+        return withStatus(DriverStatus.AVAILABLE);
+    }
+
+    public Driver changeStatus(DriverStatus newStatus) {
+        if (newStatus == null) {
+            throw new InvalidFieldException("status cannot be null");
+        }
+        return withStatus(newStatus);
+    }
+
+    private Driver withStatus(DriverStatus newStatus) {
+        return new Driver(id, userId, licenseNumber, licenseCategories, newStatus);
+    }
+
+    private void requireStatus(DriverStatus expected, String message) {
+        if (status != expected) {
+            throw new InvalidFieldException(message);
+        }
     }
 }

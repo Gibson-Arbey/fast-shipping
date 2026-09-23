@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 public record RegisterVehicleRequest(
         @NotBlank(message = "type is required")
         String type,
-        @NotNull(message = "maxWeigth is required")
-        @Positive(message = "maxWeigth must be greater than zero")
-        BigDecimal maxWeigth,
+        @NotNull(message = "maxWeight is required")
+        @Positive(message = "maxWeight must be greater than zero")
+        BigDecimal maxWeight,
         @NotNull(message = "maxVolume is required")
         @Positive(message = "maxVolume must be greater than zero")
         BigDecimal maxVolume,

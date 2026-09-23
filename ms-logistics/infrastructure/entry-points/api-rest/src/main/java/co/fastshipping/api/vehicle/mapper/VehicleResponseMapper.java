@@ -15,7 +15,7 @@ public final class VehicleResponseMapper {
                 vehicle.getId(),
                 vehicle.getStatus().name(),
                 vehicle.getType().name(),
-                vehicle.getMaxWeigth(),
+                vehicle.getMaxWeight(),
                 vehicle.getMaxVolume(),
                 vehicle.getPlate()
         );

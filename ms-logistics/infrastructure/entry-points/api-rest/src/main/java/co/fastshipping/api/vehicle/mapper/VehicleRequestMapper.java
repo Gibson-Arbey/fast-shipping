@@ -16,7 +16,7 @@ public final class VehicleRequestMapper {
 
         return new RegisterVehicleCommand(
                 request.type(),
-                request.maxWeigth(),
+                request.maxWeight(),
                 request.maxVolume(),
                 request.plate()
         );

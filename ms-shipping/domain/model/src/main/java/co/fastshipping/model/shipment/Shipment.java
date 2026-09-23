@@ -13,6 +13,8 @@ public class Shipment {
 
     private final LocalDateTime createdAt;
 
+    private final ShipmentStatus status;
+
     private Shipment(Long id, Long senderAddressId, LocalDateTime createdAt) {
         this.id = id;
         this.senderAddressId = senderAddressId;

@@ -28,6 +28,14 @@ public class VehicleJpaAdapter implements VehicleRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Vehicle findById(Long id) {
+        return vehicleJpaRepository.findById(id)
+                .map(VehicleJpaMapper::toDomain)
+                .orElse(null);
+    }
+
+    @Override
     public List<Vehicle> findAllByFilters(VehicleStatus status, VehicleType type, BigDecimal minWeightCapacity, BigDecimal maxWeightCapacity, BigDecimal minVolumeCapacity, BigDecimal maxVolumeCapacity, String plate) {
         return vehicleJpaRepository.findAllByFilters(
                 status, type, minWeightCapacity, maxWeightCapacity, minVolumeCapacity, maxVolumeCapacity, plate

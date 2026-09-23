@@ -11,6 +11,8 @@ public interface VehicleRepository {
 
     Vehicle save(Vehicle vehicle);
 
+    Vehicle findById(Long id);
+
     List<Vehicle> findAllByFilters(VehicleStatus status, VehicleType type, BigDecimal minWeightCapacity, BigDecimal maxWeightCapacity, BigDecimal minVolumeCapacity, BigDecimal maxVolumeCapacity, String plate);
 
     void updateStatus(Long id, VehicleStatus status);

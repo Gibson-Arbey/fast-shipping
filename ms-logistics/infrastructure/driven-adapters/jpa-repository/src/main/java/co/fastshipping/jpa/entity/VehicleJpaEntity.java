@@ -30,7 +30,7 @@ public class VehicleJpaEntity {
     private VehicleType type;
 
     @Column(name = "vehi_maxweight", nullable = false)
-    private BigDecimal maxWeigth;
+    private BigDecimal maxWeight;
 
     @Column(name = "vehi_maxvolume", nullable = false)
     private BigDecimal maxVolume;

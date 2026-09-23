@@ -1,5 +1,6 @@
 package co.fastshipping.usecase.vehicle;
 
+import co.fastshipping.model.vehicle.Vehicle;
 import co.fastshipping.model.vehicle.VehicleStatus;
 import co.fastshipping.model.vehicle.exception.VehicleNotFoundException;
 import co.fastshipping.model.vehicle.gateways.VehicleRepository;
@@ -16,6 +17,11 @@ public class UpdateStatusVehicleUseCase {
             throw new VehicleNotFoundException("Vehicle not found");
         }
 
-        vehicleRepository.updateStatus(id, VehicleStatus.fromString(status));
+        Vehicle vehicle = vehicleRepository.findById(id);
+        if (vehicle == null) {
+            throw new VehicleNotFoundException("Vehicle not found");
+        }
+
+        vehicleRepository.save(vehicle.changeStatus(VehicleStatus.fromString(status)));
     }
 }

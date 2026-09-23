@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class ParcelJpaAdapter implements ParcelRepository {
@@ -18,5 +20,10 @@ public class ParcelJpaAdapter implements ParcelRepository {
     @Transactional
     public Parcel save(Parcel parcel) {
         return ParcelJpaMapper.toDomain(parcelJpaRepository.save(ParcelJpaMapper.toJpaEntity(parcel)));
+    }
+
+    @Override
+    public List<Parcel> findAllByShipment(Long shipmentId) {
+        return
     }
 }

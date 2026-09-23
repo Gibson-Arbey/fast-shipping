@@ -6,7 +6,7 @@ public record VehicleResponse(
         Long id,
         String status,
         String type,
-        BigDecimal maxWeigth,
+        BigDecimal maxWeight,
         BigDecimal maxVolume,
         String plate
 ) {

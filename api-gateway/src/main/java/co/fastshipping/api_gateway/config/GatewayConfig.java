@@ -19,6 +19,13 @@ public class GatewayConfig {
 
         return route("ms-logistics")
                 .route(path("/api/logistics/**"), http())
+                .route(path("/api/vehicle/**"), http())
+                .route(path("/api/driver/**"), http())
+                .route(path("/api/license-category/**"), http())
+                .route(path("/api/route/**"), http())
+                .route(path("/api/route-assignment/**"), http())
+                .route(path("/api/delivery/**"), http())
+                .route(path("/api/incident/**"), http())
                 .filter(UserContextGatewayFilter.filter())
                 .filter(lb("MS-LOGISTICS"))
                 .build()

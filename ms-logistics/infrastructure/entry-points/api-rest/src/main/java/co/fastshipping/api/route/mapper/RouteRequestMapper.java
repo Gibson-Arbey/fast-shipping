@@ -1,6 +1,7 @@
 package co.fastshipping.api.route.mapper;
 
 import co.fastshipping.api.route.request.RegisterRouteRequest;
+import co.fastshipping.api.route.request.UpdateRouteRequest;
 import co.fastshipping.usecase.route.command.RegisterRouteCommand;
 import co.fastshipping.usecase.route.command.RegisterRouteStopCommand;
 import co.fastshipping.usecase.route.query.GetRouteQuery;
@@ -22,6 +23,19 @@ public final class RouteRequestMapper {
                 request.name(),
                 request.stops()
                         .stream()
+                        .map(stop -> new RegisterRouteStopCommand(stop.sequence(), stop.city()))
+                        .collect(Collectors.toCollection(LinkedHashSet::new))
+        );
+    }
+
+    public static RegisterRouteCommand toCommand(UpdateRouteRequest request) {
+        if (request == null) {
+            return null;
+        }
+
+        return new RegisterRouteCommand(
+                request.name(),
+                request.stops().stream()
                         .map(stop -> new RegisterRouteStopCommand(stop.sequence(), stop.city()))
                         .collect(Collectors.toCollection(LinkedHashSet::new))
         );

@@ -18,6 +18,6 @@ public class RegisterVehicleUseCase {
             throw new VehicleAlreadyExistsException("A vehicle with plate " + command.plate() + " already exist");
         }
 
-        return vehicleRepository.save(Vehicle.create(VehicleType.fromString(command.type()), command.maxWeigth(), command.maxVolume(), command.plate()));
+        return vehicleRepository.save(Vehicle.create(VehicleType.fromString(command.type()), command.maxWeight(), command.maxVolume(), command.plate()));
     }
 }

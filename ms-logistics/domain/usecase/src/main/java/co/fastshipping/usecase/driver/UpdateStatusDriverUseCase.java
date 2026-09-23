@@ -15,6 +15,11 @@ public class UpdateStatusDriverUseCase {
             throw new DriverNotFoundException("Driver not found: " + id);
         }
 
-        driverRepository.updateStatus(id, DriverStatus.fromString(status));
+        var driver = driverRepository.findById(id);
+        if (driver == null) {
+            throw new DriverNotFoundException("Driver not found: " + id);
+        }
+
+        driverRepository.save(driver.changeStatus(DriverStatus.fromString(status)));
     }
 }
