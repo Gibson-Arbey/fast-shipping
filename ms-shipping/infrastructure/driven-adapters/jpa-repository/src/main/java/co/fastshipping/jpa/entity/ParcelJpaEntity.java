@@ -23,7 +23,7 @@ public class ParcelJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "parc_trackingnumber")
+    @Column(name = "parc_trackingnumber", nullable = false, unique = true)
     private UUID trackingNumber;
 
     @Column(name = "addr_id", nullable = false)

@@ -1,9 +1,8 @@
-##Spring Configuration
 server:
   port: 8080
 spring:
   application:
-    name: ms-notification
+    name: "ms-notification"
   devtools:
     add-properties: false
   threads:
@@ -12,13 +11,22 @@ spring:
   h2:
     console:
       enabled: true
-      path: /h2
+      path: "/h2"
   profiles:
-    include:
-# Eureka Config
+    include: null
 eureka:
   instance:
     prefer-ip-address: true
   client:
     service-url:
-      default-zone: http://localhost:8761/eureka/
+      default-zone: "http://localhost:8761/eureka/"
+commons:
+  jms:
+    input-concurrency: 10
+    input-queue: "DEV.QUEUE.2"
+    input-queue-alias: ""
+    reactive: false
+ibm:
+  mq:
+    channel: "DEV.APP.SVRCONN"
+    user: "app"

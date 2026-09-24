@@ -54,4 +54,10 @@ public class JpaConfig {
 
         return em;
     }
+
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            DataSource dataSource,
+            String dialect) {
+        return entityManagerFactory(dataSource, dialect, "none");
+    }
 }

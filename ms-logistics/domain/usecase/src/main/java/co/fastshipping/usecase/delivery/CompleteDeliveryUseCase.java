@@ -12,10 +12,13 @@ public class CompleteDeliveryUseCase {
     private final DeliveryTrackingGateway trackingGateway;
 
     public Delivery execute(Long id) {
+        return execute(id, "", null);
+    }
+
+    public Delivery execute(Long id, String location, String observation) {
         Delivery delivery = get(id).complete();
-        Delivery saved = repository.save(delivery);
-        trackingGateway.notifyStatusChange(saved);
-        return saved;
+        trackingGateway.notifyStatusChange(delivery, location, observation);
+        return repository.save(delivery);
     }
 
     private Delivery get(Long id) {

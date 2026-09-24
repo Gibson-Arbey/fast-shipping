@@ -47,6 +47,7 @@ class DeliveryUseCaseTest {
         Delivery delivery = createUseCase.execute(new CreateDeliveryCommand(100L, 5L, 10L));
 
         assertEquals(DeliveryStatus.PENDING, delivery.getStatus());
+        verify(trackingGateway).notifyStatusChange(delivery, "", "Delivery assigned to route stop 10");
     }
 
     @Test
@@ -55,9 +56,9 @@ class DeliveryUseCaseTest {
         when(deliveryRepository.findById(9L)).thenReturn(pending);
         when(deliveryRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Delivery result = startUseCase.execute(9L);
+        Delivery result = startUseCase.execute(9L, "Hub A", "Package picked up");
 
         assertEquals(DeliveryStatus.IN_TRANSIT, result.getStatus());
-        verify(trackingGateway).notifyStatusChange(result);
+        verify(trackingGateway).notifyStatusChange(result, "Hub A", "Package picked up");
     }
 }

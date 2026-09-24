@@ -8,6 +8,12 @@ public interface ParcelRepository {
 
     Parcel save(Parcel parcel);
 
-    List<Parcel> findAllByShipment(Long shipmentId);
+    Parcel findById(Long id);
+
+    List<Parcel> findAllByShipmentId(Long shipmentId);
+
+    default List<Parcel> findAllByShipment(Long shipmentId) {
+        return findAllByShipmentId(shipmentId);
+    }
 
 }

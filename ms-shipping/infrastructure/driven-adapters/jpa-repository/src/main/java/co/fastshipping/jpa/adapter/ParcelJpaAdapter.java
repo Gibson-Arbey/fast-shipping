@@ -23,7 +23,16 @@ public class ParcelJpaAdapter implements ParcelRepository {
     }
 
     @Override
-    public List<Parcel> findAllByShipment(Long shipmentId) {
-        return
+    @Transactional(readOnly = true)
+    public Parcel findById(Long id) {
+        return parcelJpaRepository.findById(id).map(ParcelJpaMapper::toDomain).orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Parcel> findAllByShipmentId(Long shipmentId) {
+        return parcelJpaRepository.findAllByShipmentId(shipmentId).stream()
+                .map(ParcelJpaMapper::toDomain)
+                .toList();
     }
 }

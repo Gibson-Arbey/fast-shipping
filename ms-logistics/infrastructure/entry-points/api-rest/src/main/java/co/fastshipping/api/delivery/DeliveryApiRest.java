@@ -4,6 +4,7 @@ import co.fastshipping.api.config.ApiPath;
 import co.fastshipping.api.delivery.mapper.DeliveryRequestMapper;
 import co.fastshipping.api.delivery.mapper.DeliveryResponseMapper;
 import co.fastshipping.api.delivery.request.CreateDeliveryRequest;
+import co.fastshipping.api.delivery.request.DeliveryStatusUpdateRequest;
 import co.fastshipping.api.delivery.response.DeliveryResponse;
 import co.fastshipping.usecase.delivery.CancelDeliveryUseCase;
 import co.fastshipping.usecase.delivery.CompleteDeliveryUseCase;
@@ -64,22 +65,46 @@ public class DeliveryApiRest {
     }
 
     @PatchMapping("/{id}/start")
-    public ResponseEntity<DeliveryResponse> start(@PathVariable Long id) {
-        return ResponseEntity.ok(DeliveryResponseMapper.toResponse(startUseCase.execute(id)));
+    public ResponseEntity<DeliveryResponse> start(
+            @PathVariable Long id,
+            @Valid @RequestBody(required = false) DeliveryStatusUpdateRequest request
+    ) {
+        return ResponseEntity.ok(DeliveryResponseMapper.toResponse(
+                startUseCase.execute(id, location(request), observation(request))));
     }
 
     @PatchMapping("/{id}/complete")
-    public ResponseEntity<DeliveryResponse> complete(@PathVariable Long id) {
-        return ResponseEntity.ok(DeliveryResponseMapper.toResponse(completeUseCase.execute(id)));
+    public ResponseEntity<DeliveryResponse> complete(
+            @PathVariable Long id,
+            @Valid @RequestBody(required = false) DeliveryStatusUpdateRequest request
+    ) {
+        return ResponseEntity.ok(DeliveryResponseMapper.toResponse(
+                completeUseCase.execute(id, location(request), observation(request))));
     }
 
     @PatchMapping("/{id}/fail")
-    public ResponseEntity<DeliveryResponse> fail(@PathVariable Long id) {
-        return ResponseEntity.ok(DeliveryResponseMapper.toResponse(failUseCase.execute(id)));
+    public ResponseEntity<DeliveryResponse> fail(
+            @PathVariable Long id,
+            @Valid @RequestBody(required = false) DeliveryStatusUpdateRequest request
+    ) {
+        return ResponseEntity.ok(DeliveryResponseMapper.toResponse(
+                failUseCase.execute(id, location(request), observation(request))));
     }
 
     @PatchMapping("/{id}/cancel")
-    public ResponseEntity<DeliveryResponse> cancel(@PathVariable Long id) {
-        return ResponseEntity.ok(DeliveryResponseMapper.toResponse(cancelUseCase.execute(id)));
+    public ResponseEntity<DeliveryResponse> cancel(
+            @PathVariable Long id,
+            @Valid @RequestBody(required = false) DeliveryStatusUpdateRequest request
+    ) {
+        return ResponseEntity.ok(DeliveryResponseMapper.toResponse(
+                cancelUseCase.execute(id, location(request), observation(request))));
+    }
+
+    private String location(DeliveryStatusUpdateRequest request) {
+        return request == null || request.location() == null ? "" : request.location();
+    }
+
+    private String observation(DeliveryStatusUpdateRequest request) {
+        return request == null ? null : request.observation();
     }
 }

@@ -62,6 +62,7 @@ class JwtAuthenticationFilterTest {
         assertEquals("ROLE_CUSTOMER", user.role());
         assertTrue(authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER")));
+        assertInstanceOf(String.class, authentication.getCredentials());
         assertTrue(chainCalled.get());
     }
 

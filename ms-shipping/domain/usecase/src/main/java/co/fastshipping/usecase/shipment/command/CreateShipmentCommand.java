@@ -1,4 +1,4 @@
 package co.fastshipping.usecase.shipment.command;
 
-public record CreateShipmentCommand() {
+public record CreateShipmentCommand(Long senderAddressId) {
 }

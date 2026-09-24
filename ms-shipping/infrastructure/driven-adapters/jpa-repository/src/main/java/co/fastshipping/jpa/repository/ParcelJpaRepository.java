@@ -10,5 +10,5 @@ import java.util.List;
 public interface ParcelJpaRepository extends JpaRepository<ParcelJpaEntity, Long> {
 
     @Query("SELECT p FROM ParcelJpaEntity p WHERE p.shipment.id = :shipmentId")
-    List<ParcelJpaEntity> findAllByShipment(@Param("shipmentId") Long shipmentId);
+    List<ParcelJpaEntity> findAllByShipmentId(@Param("shipmentId") Long shipmentId);
 }

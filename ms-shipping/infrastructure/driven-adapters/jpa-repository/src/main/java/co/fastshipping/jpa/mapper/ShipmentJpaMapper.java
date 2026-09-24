@@ -14,7 +14,8 @@ public class ShipmentJpaMapper {
         return Shipment.restore(
                 entity.getId(),
                 entity.getSenderAddressId(),
-                entity.getCreatedAt()
+                entity.getCreatedAt(),
+                entity.getStatus()
         );
     }
 
@@ -25,6 +26,7 @@ public class ShipmentJpaMapper {
                 .id(domain.getId())
                 .senderAddressId(domain.getSenderAddressId())
                 .createdAt(domain.getCreatedAt())
+                .status(domain.getStatus())
                 .build();
     }
 }

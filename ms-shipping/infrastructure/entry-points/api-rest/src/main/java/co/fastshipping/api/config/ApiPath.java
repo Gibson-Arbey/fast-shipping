@@ -8,6 +8,7 @@ public class ApiPath {
 
     public static final String ROUTE_PARCEL  = "/api/parcel";
     public static final String ROUTE_PARCEL_HISTORY = "/api/parcel-history";
+    public static final String ROUTE_SHIPMENT = "/api/shipment";
 
     public static final String V1 = "1";
 }

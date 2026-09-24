@@ -1,5 +1,6 @@
 package co.fastshipping.jpa.entity;
 
+import co.fastshipping.model.shipment.ShipmentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,4 +25,8 @@ public class ShipmentJpaEntity {
 
     @Column(name = "ship_createdat", nullable = false)
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ship_status", nullable = false, length = 20)
+    private ShipmentStatus status;
 }

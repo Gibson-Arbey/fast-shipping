@@ -2,6 +2,7 @@ package co.fastshipping.usecase.delivery;
 
 import co.fastshipping.model.delivery.Delivery;
 import co.fastshipping.model.delivery.gateways.DeliveryRepository;
+import co.fastshipping.model.delivery.gateways.DeliveryTrackingGateway;
 import co.fastshipping.model.route.Route;
 import co.fastshipping.model.route.exception.RouteNotFoundException;
 import co.fastshipping.model.route.exception.RouteStopNotFoundException;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateDeliveryUseCase {
     private final DeliveryRepository deliveryRepository;
+    private final DeliveryTrackingGateway trackingGateway;
     private final RouteAssignmentRepository assignmentRepository;
     private final RouteRepository routeRepository;
 
@@ -40,8 +42,8 @@ public class CreateDeliveryUseCase {
             throw new RouteStopNotFoundException("Route stop not found in assignment route: " + command.routeStopId());
         }
 
-        return deliveryRepository.save(
-                Delivery.create(command.parcelId(), command.routeAssignmentId(), command.routeStopId())
-        );
+        Delivery delivery = Delivery.create(command.parcelId(), command.routeAssignmentId(), command.routeStopId());
+        trackingGateway.notifyStatusChange(delivery, "", "Delivery assigned to route stop " + delivery.getRouteStopId());
+        return deliveryRepository.save(delivery);
     }
 }

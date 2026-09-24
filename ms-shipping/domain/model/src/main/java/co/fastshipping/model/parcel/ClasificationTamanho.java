@@ -1,5 +1,7 @@
 package co.fastshipping.model.parcel;
 
+import co.fastshipping.model.exception.InvalidFieldException;
+
 import java.math.BigDecimal;
 
 public enum ClasificationTamanho {
@@ -13,6 +15,12 @@ public enum ClasificationTamanho {
             BigDecimal width,
             BigDecimal length
     ) {
+
+        if (height == null || height.compareTo(BigDecimal.ZERO) <= 0
+                || width == null || width.compareTo(BigDecimal.ZERO) <= 0
+                || length == null || length.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidFieldException("Parcel dimensions must be greater than zero");
+        }
 
         BigDecimal volume = height
                 .multiply(width)

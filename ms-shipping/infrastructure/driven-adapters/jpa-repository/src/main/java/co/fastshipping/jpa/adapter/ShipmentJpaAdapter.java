@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class ShipmentJpaAdapter implements ShipmentRepository {
@@ -20,5 +22,19 @@ public class ShipmentJpaAdapter implements ShipmentRepository {
         return ShipmentJpaMapper.toDomain(
                 shipmentJpaRepository.save(ShipmentJpaMapper.toJpaEntity(shipment))
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Shipment findById(Long id) {
+        return shipmentJpaRepository.findById(id).map(ShipmentJpaMapper::toDomain).orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Shipment> findAll() {
+        return shipmentJpaRepository.findAllByOrderByIdAsc().stream()
+                .map(ShipmentJpaMapper::toDomain)
+                .toList();
     }
 }
