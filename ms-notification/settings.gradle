@@ -21,3 +21,7 @@ project(':model').projectDir = file('./domain/model')
 project(':usecase').projectDir = file('./domain/usecase')
 include ':mq-listener'
 project(':mq-listener').projectDir = file('./infrastructure/entry-points/mq-listener')
+include ':email-notification'
+project(':email-notification').projectDir = file('./infrastructure/driven-adapters/email-notification')
+include ':twilio-notification'
+project(':twilio-notification').projectDir = file('./infrastructure/driven-adapters/twilio-notification')

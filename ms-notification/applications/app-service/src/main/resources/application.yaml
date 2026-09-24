@@ -8,10 +8,26 @@ spring:
   threads:
     virtual:
       enabled: true
-  h2:
-    console:
-      enabled: true
-      path: "/h2"
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: "3000ms"
+          max-interval: "10000ms"
+          multiplier: 2.0
+          max-retries: 3
   profiles:
     include: null
 eureka:
@@ -20,13 +36,8 @@ eureka:
   client:
     service-url:
       default-zone: "http://localhost:8761/eureka/"
-commons:
-  jms:
-    input-concurrency: 10
-    input-queue: "DEV.QUEUE.2"
-    input-queue-alias: ""
-    reactive: false
-ibm:
-  mq:
-    channel: "DEV.APP.SVRCONN"
-    user: "app"
+notification:
+  twilio:
+    account-sid: ${TWILIO_ACCOUNT_SID:}
+    auth-token: ${TWILIO_AUTH_TOKEN:}
+    from-number: ${TWILIO_FROM_NUMBER:}
