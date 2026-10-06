@@ -6,6 +6,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,7 +34,9 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Binding emailNotificationBinding(Queue emailNotificationQueue, TopicExchange notificationEventsExchange) {
+    public Binding emailNotificationBinding(
+            @Qualifier("emailNotificationQueue") Queue emailNotificationQueue,
+            TopicExchange notificationEventsExchange) {
         return BindingBuilder
                 .bind(emailNotificationQueue)
                 .to(notificationEventsExchange)
@@ -41,7 +44,9 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Binding smsNotificationBinding(Queue smsNotificationQueue, TopicExchange notificationEventsExchange) {
+    public Binding smsNotificationBinding(
+            @Qualifier("smsNotificationQueue") Queue smsNotificationQueue,
+            TopicExchange notificationEventsExchange) {
         return BindingBuilder
                 .bind(smsNotificationQueue)
                 .to(notificationEventsExchange)

@@ -1,23 +1,31 @@
 package co.fastshipping.model.notificationevent;
 
 import co.fastshipping.model.exception.InvalidFieldException;
-import lombok.Getter;
 
-@Getter
-public class NotificationEvent {
+public record NotificationEvent(String recipient, String subject, String message) {
 
-    private final String recipient;
-    private final String subject;
-    private final String message;
+    public NotificationEvent {
+        if (recipient == null || recipient.isBlank()) {
+            throw new InvalidFieldException("recipient not valid");
+        }
+        if (subject == null || subject.isBlank()) {
+            throw new InvalidFieldException("subject not valid");
+        }
+        if (message == null || message.isBlank()) {
+            throw new InvalidFieldException("message not valid");
+        }
+    }
 
-    private NotificationEvent(String recipient, String subject, String message) {
-        if (recipient == null || recipient.isBlank()) throw new InvalidFieldException("recipient not valid");
-        if (subject == null || subject.isBlank()) throw new InvalidFieldException("subject not valid");
-        if (message == null || message.isBlank()) throw new InvalidFieldException("message not valid");
+    public String getRecipient() {
+        return recipient;
+    }
 
-        this.recipient = recipient;
-        this.subject = subject;
-        this.message = message;
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public static NotificationEvent create(String recipient, String subject, String message) {

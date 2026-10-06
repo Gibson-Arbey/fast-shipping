@@ -4,6 +4,7 @@ import co.fastshipping.model.role.Role;
 import co.fastshipping.model.role.exception.RoleNotFoundException;
 import co.fastshipping.model.role.gateways.RoleRepository;
 import co.fastshipping.model.user.User;
+import co.fastshipping.model.user.gateways.UserNotificationGateway;
 import co.fastshipping.model.user.gateways.PasswordEncoderRepository;
 import co.fastshipping.model.user.gateways.UserRepository;
 import co.fastshipping.model.user.valueobject.Email;
@@ -19,6 +20,7 @@ public class CreateUserUseCase {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoderRepository passwordEncoderRepository;
+    private final UserNotificationGateway userNotificationGateway;
 
     public User execute(CreateUserCommand command) {
 
@@ -36,12 +38,16 @@ public class CreateUserUseCase {
         PasswordPolicy.validate(command.password());
         Password password = new Password(passwordEncoderRepository.encode(command.password()));
 
-        return userRepository.save(User.create(
+        User user = userRepository.save(User.create(
             command.name(),
             command.lastName(),
             email,
             password,
             role.getId()
         ));
+        userNotificationGateway.publishWelcomeEmail(
+                user.getEmail().value(),
+                user.getName() + " " + user.getLastName());
+        return user;
     }
 }

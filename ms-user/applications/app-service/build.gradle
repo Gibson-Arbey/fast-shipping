@@ -2,6 +2,7 @@ apply plugin: 'org.springframework.boot'
 
 dependencies {
 	implementation project(':security')
+	implementation project(':rabbit-notification')
 	testImplementation 'org.springframework:spring-web'
 	implementation project(':api-rest')
 	implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
