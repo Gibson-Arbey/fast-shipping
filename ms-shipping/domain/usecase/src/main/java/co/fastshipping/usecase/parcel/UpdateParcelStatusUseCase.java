@@ -6,19 +6,40 @@ import co.fastshipping.model.parcel.ParcelStatus;
 import co.fastshipping.model.parcel.exception.ParcelNotFoundException;
 import co.fastshipping.model.parcel.gateways.ParcelLifecycleRepository;
 import co.fastshipping.model.parcel.gateways.ParcelRepository;
+import co.fastshipping.model.parcel.gateways.ParcelStatusNotificationGateway;
 import co.fastshipping.model.shipment.Shipment;
 import co.fastshipping.model.shipment.ShipmentStatus;
 import co.fastshipping.model.shipment.ShipmentStatusResolver;
 import co.fastshipping.model.shipment.exception.ShipmentNotFoundException;
 import co.fastshipping.model.shipment.gateways.ShipmentRepository;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class UpdateParcelStatusUseCase {
     private final ParcelRepository parcelRepository;
     private final ParcelLifecycleRepository parcelLifecycleRepository;
     private final ShipmentRepository shipmentRepository;
     private final ShipmentStatusResolver statusResolver;
+    private final ParcelStatusNotificationGateway notificationGateway;
+
+    public UpdateParcelStatusUseCase(
+            ParcelRepository parcelRepository,
+            ParcelLifecycleRepository parcelLifecycleRepository,
+            ShipmentRepository shipmentRepository,
+            ShipmentStatusResolver statusResolver,
+            ParcelStatusNotificationGateway notificationGateway) {
+        this.parcelRepository = parcelRepository;
+        this.parcelLifecycleRepository = parcelLifecycleRepository;
+        this.shipmentRepository = shipmentRepository;
+        this.statusResolver = statusResolver;
+        this.notificationGateway = notificationGateway;
+    }
+
+    /** Keeps existing use-case callers independent from the optional notification integration. */
+    public UpdateParcelStatusUseCase(
+            ParcelRepository parcelRepository,
+            ParcelLifecycleRepository parcelLifecycleRepository,
+            ShipmentRepository shipmentRepository,
+            ShipmentStatusResolver statusResolver) {
+        this(parcelRepository, parcelLifecycleRepository, shipmentRepository, statusResolver, parcel -> { });
+    }
 
     public Parcel execute(Long parcelId, ParcelStatus newStatus, Long userId, String location, String observation) {
         Parcel parcel = parcelRepository.findById(parcelId);
@@ -34,7 +55,10 @@ public class UpdateParcelStatusUseCase {
 
         Parcel changedParcel = transition(parcel, newStatus);
         Shipment shipmentToUpdate = recalculateShipmentStatus(changedParcel);
-        return parcelLifecycleRepository.saveWithHistory(changedParcel, userId, location, observation, shipmentToUpdate);
+        Parcel savedParcel = parcelLifecycleRepository.saveWithHistory(
+                changedParcel, userId, location, observation, shipmentToUpdate);
+        notificationGateway.notifyStatusChanged(savedParcel);
+        return savedParcel;
     }
 
     private Parcel transition(Parcel parcel, ParcelStatus newStatus) {

@@ -10,6 +10,11 @@ services:
       POSTGRES_DB: user-db
     volumes:
       - user_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d user-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   shipping-db:
     image: postgres:16-alpine
@@ -22,6 +27,12 @@ services:
       POSTGRES_DB: shipping-db
     volumes:
       - shipping_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d shipping-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   logistics-db:
     image: postgres:16-alpine
     container_name: logistics-db
@@ -33,28 +44,166 @@ services:
       POSTGRES_DB: logistics-db
     volumes:
       - logistics_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d logistics-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   grafana-lgtm:
-    image: 'grafana/otel-lgtm:latest'
+    image: grafana/otel-lgtm:latest
     ports:
-      - '3000:3000'
-      - '4317:4317'
-      - '4318:4318'
+      - "3000:3000"
+      - "4317:4317"
+      - "4318:4318"
     environment:
-      - OTEL_METRIC_EXPORT_INTERVAL=5000
+      OTEL_METRIC_EXPORT_INTERVAL: 5000
+
   rabbitmq:
     image: rabbitmq:4.2-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"   # Puerto para comunicación entre microservicios
-      - "15672:15672" # Puerto para la consola de gestión web
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-fastshipping}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-fastshipping_dev}
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq # <--- ¡La persistencia!
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  discovery-server:
+    build:
+      context: ./discovery-server
+      dockerfile: deployment/Dockerfile
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+
+  ms-user:
+    build:
+      context: ./ms-user
+      dockerfile: deployment/Dockerfile
+    container_name: ms-user
+    depends_on:
+      user-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/user-db
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-fastshipping}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-fastshipping_dev}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      INTERNAL_SERVICE_API_KEY: ${INTERNAL_SERVICE_API_KEY:-fastshipping_internal_dev}
+      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://grafana-lgtm:4318/v1/traces
+      MANAGEMENT_OPENTELEMETRY_LOGGING_EXPORT_OTLP_ENDPOINT: http://grafana-lgtm:4318/v1/logs
+      MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://grafana-lgtm:4318/v1/metrics
+    ports:
+      - "8081:8081"
+
+  ms-shipping:
+    build:
+      context: ./ms-shipping
+      dockerfile: deployment/Dockerfile
+    container_name: ms-shipping
+    depends_on:
+      shipping-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      ms-user:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://shipping-db:5432/shipping-db
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-fastshipping}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-fastshipping_dev}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      USER_SERVICE_BASE_URL: http://ms-user:8081
+      INTERNAL_SERVICE_API_KEY: ${INTERNAL_SERVICE_API_KEY:-fastshipping_internal_dev}
+    ports:
+      - "8082:8082"
+
+  ms-logistics:
+    build:
+      context: ./ms-logistics
+      dockerfile: deployment/Dockerfile
+    container_name: ms-logistics
+    depends_on:
+      logistics-db:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      ms-shipping:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://logistics-db:5432/logistics-db
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      SHIPPING_SERVICE_BASE_URL: http://ms-shipping:8082
+    ports:
+      - "8083:8083"
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: deployment/Dockerfile
+    container_name: api-gateway
+    depends_on:
+      discovery-server:
+        condition: service_started
+      ms-user:
+        condition: service_started
+      ms-shipping:
+        condition: service_started
+      ms-logistics:
+        condition: service_started
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+    ports:
+      - "8080:8080"
+
+  ms-notification:
+    profiles: ["notifications"]
+    build:
+      context: ./ms-notification
+      dockerfile: deployment/Dockerfile
+    container_name: ms-notification
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8084
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-fastshipping}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-fastshipping_dev}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER:-}
+    ports:
+      - "8084:8084"
+
 volumes:
-  user_data:            # Declaramos el volumen persistente
-  shipping_data:      # Declaramos el volumen persistente
-  logistics_data:     # Declaramos el volumen persistente
-  rabbitmq_data:      # Declaramos el volumen persistente
+  user_data:
+  shipping_data:
+  logistics_data:
+  rabbitmq_data:

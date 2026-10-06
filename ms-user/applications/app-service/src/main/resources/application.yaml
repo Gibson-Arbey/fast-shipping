@@ -11,8 +11,8 @@ spring:
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+    username: ${RABBITMQ_USERNAME:fastshipping}
+    password: ${RABBITMQ_PASSWORD:fastshipping_dev}
   datasource:
     url: "jdbc:postgresql://localhost:5432/user-db"
     username: "admin"
@@ -59,6 +59,7 @@ security:
   jwtKeyPrivate: "9c9c48d57077710e8a8ec4a72f0c959fa11ea2c2e1073b7c7d39b4eefff5ddf8"
   jwtUserGenerator: "AUTH0JWT-BACKEND"
   jwtExpiration: 14400000
+  internal-api-key: "${INTERNAL_SERVICE_API_KEY:fastshipping_internal_dev}"
 # Eureka Config
 eureka:
   instance:

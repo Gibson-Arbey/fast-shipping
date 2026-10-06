@@ -1,7 +1,10 @@
-FROM eclipse-temurin:25-jdk-alpine
-VOLUME /tmp
-COPY *.jar ms-notification.jar
-ENV JAVA_OPTS=" -Xshareclasses:name=cacheapp,cacheDir=/cache,nonfatal -XX:+UseContainerSupport -XX:MaxRAMPercentage=70 -Djava.security.egd=file:/dev/./urandom"
-# Replace with a non-root user to avoid running the container with excessive privileges
-USER appuser
-ENTRYPOINT [ "/bin/sh", "-c", "/opt/java/openjdk/bin/java $JAVA_OPTS  -jar /ms-notification.jar" ]
+FROM eclipse-temurin:21-jdk AS build
+WORKDIR /workspace
+COPY . .
+RUN chmod +x gradlew && ./gradlew --no-daemon :app-service:bootJar
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build --chown=10001:10001 /workspace/applications/app-service/build/libs/ms-notification.jar /app/app.jar
+USER 10001:10001
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=70.0", "-jar", "/app/app.jar"]
